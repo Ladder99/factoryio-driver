@@ -1,0 +1,20 @@
+machines:
+  - id: demo
+    enabled: !!bool true
+    type: l99.driver.factoryio.FactoryioMachine, factoryio
+    strategy: l99.driver.factoryio.collectors.Basic01, factoryio
+    handler: l99.driver.factoryio.handlers.SplunkMetric, factoryio
+    
+    broker:
+      enabled: !!bool true
+      net_ip: 10.20.30.102
+      net_port: !!int 1883
+      auto_connect: !!bool true
+      publish_status: !!bool true
+      publish_arrivals: !!bool true
+      publish_changes: !!bool true
+      publish_disco: !!bool true
+      disco_base_topic: opcxmlda
+      anonymous: !!bool true
+      user: admin
+      password: password
