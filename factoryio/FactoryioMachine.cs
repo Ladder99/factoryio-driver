@@ -1,6 +1,6 @@
 using l99.driver.@base;
 
-namespace factoryio
+namespace l99.driver.factoryio
 {
     public class FactoryioMachine : Machine
     {
@@ -28,8 +28,6 @@ namespace factoryio
             dynamic cfg = (dynamic) config;
             
             this["cfg"] = cfg;
-            this["data"] = cfg.type["data"];
-            //this["platform"] = new Platform(this);
         }
     }
 }

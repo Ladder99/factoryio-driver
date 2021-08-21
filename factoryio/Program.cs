@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using l99.driver.@base;
 
-namespace factoryio
+namespace l99.driver.factoryio
 {
     class Program
     {

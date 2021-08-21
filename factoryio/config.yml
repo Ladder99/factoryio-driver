@@ -14,7 +14,10 @@ machines:
       publish_arrivals: !!bool true
       publish_changes: !!bool true
       publish_disco: !!bool true
-      disco_base_topic: opcxmlda
+      disco_base_topic: factoryio
       anonymous: !!bool true
       user: admin
       password: password
+      
+    l99.driver.factoryio.FactoryioMachine, factoryio:
+      sweep_ms: !!int 100
