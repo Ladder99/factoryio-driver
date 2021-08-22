@@ -143,7 +143,16 @@ namespace l99.driver.factoryio.collectors
 
         private async Task incomingMessage(string topic, string payload, ushort qos, bool retain)
         {
-            //TODO: parse + write to map
+            /*
+            TODO: 
+                parse
+                find by name in _mapNames
+                    kind
+                    type    
+                        <tag> = MemoryMap.Instance.Get<type>(name, <kind>)
+                        <tag>.Value = new_value
+                        Update
+            */
         }
     }
 }

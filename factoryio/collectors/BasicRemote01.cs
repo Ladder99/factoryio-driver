@@ -8,11 +8,12 @@ namespace l99.driver.factoryio.collectors
 {
     public class BasicRemote01: Collector
     {
+        private string _subTopic = "factoryio/fio/io";
         private Dictionary<(string, string), dynamic> _mapNames = new Dictionary<(string, string), dynamic>();
         
         public BasicRemote01(Machine machine, object cfg) : base(machine, cfg)
         {
-            
+            _subTopic = ((dynamic)cfg).strategy["sub_topic"];
         }
         
         public override async Task<dynamic?> InitializeAsync()
@@ -29,6 +30,8 @@ namespace l99.driver.factoryio.collectors
                     machine.ApplyVeneer(typeof(factoryio.veneers.Memory), $"{o.GetValue("kind").ToString()}/{o.GetValue("name").ToString()}");
                     _mapNames.Add(key, new { });
                 }
+                
+                await machine.Broker.SubscribeAsync(_subTopic, incomingMessage);
                 
                 machine.VeneersApplied = true;
             }
@@ -75,6 +78,11 @@ namespace l99.driver.factoryio.collectors
             }
 
             return null;
+        }
+        
+        private async Task incomingMessage(string topic, string payload, ushort qos, bool retain)
+        {
+            dynamic tags = await machine["platform"].WriteTagsByNameAsync(payload);
         }
     }
 }

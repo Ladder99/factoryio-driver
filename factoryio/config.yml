@@ -1,6 +1,6 @@
 machines:
   - id: fio01
-    enabled: !!bool true
+    enabled: !!bool false
     type: l99.driver.factoryio.FactoryioLocalMachine, factoryio
     strategy: l99.driver.factoryio.collectors.BasicLocal01, factoryio
     handler: l99.driver.factoryio.handlers.SplunkMetric, factoryio
@@ -26,13 +26,13 @@ machines:
       sweep_ms: !!int 100
 
   - id: fio02
-    enabled: !!bool false
+    enabled: !!bool true
     type: l99.driver.factoryio.FactoryioRemoteMachine, factoryio
     strategy: l99.driver.factoryio.collectors.BasicRemote01, factoryio
     handler: l99.driver.factoryio.handlers.SplunkMetric, factoryio
 
     broker:
-      enabled: !!bool false
+      enabled: !!bool true
       net_ip: 10.20.30.102
       net_port: !!int 1883
       auto_connect: !!bool true
@@ -45,7 +45,10 @@ machines:
       user: admin
       password: password
 
+    l99.driver.factoryio.collectors.BasicRemote01, factoryio:
+      sub_topic: factoryio/fio02/io
+
     l99.driver.factoryio.FactoryioRemoteMachine, factoryio:
       sweep_ms: !!int 1000
-      net_uri: http://localhost:7410
+      net_uri: http://10.20.32.6:7410
       net_timeout_s: !!int 3
