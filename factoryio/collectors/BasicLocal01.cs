@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using EngineIO;
 using l99.driver.@base;
@@ -10,8 +11,8 @@ namespace l99.driver.factoryio.collectors
     public class BasicLocal01 : Collector
     {
         private string _subTopic = "factoryio/fio/io";
-        private Dictionary<(string, string), dynamic> _mapNames = new();
-        private Dictionary<(string, string), dynamic> _mapValues = new();
+        private Dictionary<(string, string), dynamic> _mapNames = new Dictionary<(string, string), dynamic>();
+        private Dictionary<(string, string), dynamic> _mapValues = new Dictionary<(string, string), dynamic>();
         
         public BasicLocal01(Machine machine, object cfg) : base(machine, cfg)
         {
@@ -28,7 +29,7 @@ namespace l99.driver.factoryio.collectors
             if (_mapValues.ContainsKey((memory.name, memory.direction)))
                 _mapValues[(memory.name, memory.direction)] = memory;
             else
-                _mapValues.Add((memory.name, memory.direction), memory);
+                _mapValues.Add((memory.name, memory.direction), (object) memory);   //TODO: why is boxing required
         }
         
         private void processMemories(MemoriesChangedEventArgs args, Action<dynamic> memoryAction)
@@ -46,10 +47,10 @@ namespace l99.driver.factoryio.collectors
                 {
                     var memory = new
                     {
-                        type = piv.GetType().Name,
+                        type = piv.GetType().Name.Replace("Memory",""),
                         name = piv.Name,
                         address = piv.Address,
-                        direction = piv.MemoryType.ToString().ToUpper(),
+                        direction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(piv.MemoryType.ToString().ToLower()),
                         value = piv.Value
                     };
 
@@ -65,7 +66,7 @@ namespace l99.driver.factoryio.collectors
             processMemories(args, (memory) =>
             {
                 if(!_mapNames.ContainsKey((memory.name,memory.direction)))
-                    _mapNames.Add((memory.name, memory.direction), null);
+                    _mapNames.Add((memory.name, memory.direction), new { });
             });
         }
         

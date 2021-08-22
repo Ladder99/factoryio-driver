@@ -9,6 +9,7 @@ namespace l99.driver.factoryio.veneers
         {
             lastChangedValue = new
             {
+                type = string.Empty,
                 name = string.Empty,
                 address = string.Empty,
                 direction = string.Empty,
@@ -20,6 +21,7 @@ namespace l99.driver.factoryio.veneers
         {
             var current_value = new
             {
+                input.type,
                 input.name,
                 input.address,
                 input.direction,

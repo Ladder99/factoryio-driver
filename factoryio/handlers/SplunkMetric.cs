@@ -43,11 +43,15 @@ namespace l99.driver.factoryio.handlers
         {
             if (onChange == null)
                 return;
+
+            var idx = veneer.Name.IndexOf('/');
+            var parent = veneer.Name.Substring(0, idx);
+            var child = veneer.Name.Substring(idx + 1, veneer.Name.Length - idx - 1);
             
             Regex regex = new Regex("[^a-zA-Z0-9]");
-            var sanitizedName = regex.Replace(veneer.Name, "_");
+            var sanitizedChild = regex.Replace(child, "_");
             
-            var topic = $"factoryio/{veneers.Machine.Id}/splunk/{sanitizedName}";
+            var topic = $"factoryio/{veneers.Machine.Id}/splunk/{parent}/{sanitizedChild}";
             string payload = JObject.FromObject(onChange).ToString();
             await veneers.Machine.Broker.PublishChangeAsync(topic, payload);
         }
