@@ -47,10 +47,11 @@ namespace l99.driver.factoryio
             dynamic cfg = (dynamic) config;
             
             this["cfg"] = cfg;
+            this["platform"] = new Platform(this);
             
             _factoryioRemoteEndpoint = new FactoryioRemoteEndpoint(cfg.type["net_uri"], (short)cfg.type["net_timeout_s"]);
 
-            _client = new RestClient(cfg.type["net_uri"]);
+            _client = new RestClient($"{cfg.type["net_uri"]}/api");
             _client.Timeout = cfg.type["net_timeout_s"] * 1000;
         }
     }

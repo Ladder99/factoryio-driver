@@ -12,7 +12,7 @@ namespace l99.driver.factoryio.veneers
                 type = string.Empty,
                 name = string.Empty,
                 address = string.Empty,
-                direction = string.Empty,
+                kind = string.Empty,
                 value = string.Empty
             };
         }
@@ -24,7 +24,7 @@ namespace l99.driver.factoryio.veneers
                 input.type,
                 input.name,
                 input.address,
-                input.direction,
+                input.kind,
                 input.value
             };
             

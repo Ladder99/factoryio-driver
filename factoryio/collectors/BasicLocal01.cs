@@ -26,10 +26,10 @@ namespace l99.driver.factoryio.collectors
         
         private void trackMemory(dynamic memory)
         {
-            if (_mapValues.ContainsKey((memory.name, memory.direction)))
-                _mapValues[(memory.name, memory.direction)] = memory;
+            if (_mapValues.ContainsKey((memory.name, memory.kind)))
+                _mapValues[(memory.name, memory.kind)] = memory;
             else
-                _mapValues.Add((memory.name, memory.direction), (object) memory);   //TODO: why is boxing required
+                _mapValues.Add((memory.name, memory.kind), (object) memory);   //TODO: why is boxing required
         }
         
         private void processMemories(MemoriesChangedEventArgs args, Action<dynamic> memoryAction)
@@ -50,7 +50,7 @@ namespace l99.driver.factoryio.collectors
                         type = piv.GetType().Name.Replace("Memory",""),
                         name = piv.Name,
                         address = piv.Address,
-                        direction = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(piv.MemoryType.ToString().ToLower()),
+                        kind = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(piv.MemoryType.ToString().ToLower()),
                         value = piv.Value
                     };
 
@@ -65,8 +65,8 @@ namespace l99.driver.factoryio.collectors
         {
             processMemories(args, (memory) =>
             {
-                if(!_mapNames.ContainsKey((memory.name,memory.direction)))
-                    _mapNames.Add((memory.name, memory.direction), new { });
+                if(!_mapNames.ContainsKey((memory.name,memory.kind)))
+                    _mapNames.Add((memory.name, memory.kind), new { });
             });
         }
         
@@ -81,7 +81,6 @@ namespace l99.driver.factoryio.collectors
             
             try
             {
-                
                 MemoryMap.Instance.InputsNameChanged += fioNameChange;
                 MemoryMap.Instance.OutputsNameChanged += fioNameChange;
                 MemoryMap.Instance.MemoriesNameChanged += fioNameChange;

@@ -26,7 +26,7 @@ namespace l99.driver.factoryio.handlers
                 {
                     metric_name = veneer.LastArrivedValue.name,
                     _value = veneer.LastArrivedValue.value,
-                    veneer.LastArrivedValue.direction,
+                    veneer.LastArrivedValue.kind,
                     veneer.LastArrivedValue.address
                 }
             };
