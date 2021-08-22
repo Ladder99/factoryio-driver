@@ -26,8 +26,8 @@ namespace l99.driver.factoryio.handlers
                 {
                     metric_name = veneer.LastArrivedValue.name,
                     _value = veneer.LastArrivedValue.value,
-                    direction = veneer.LastArrivedValue.direction,
-                    address = veneer.LastArrivedValue.address
+                    veneer.LastArrivedValue.direction,
+                    veneer.LastArrivedValue.address
                 }
             };
                 

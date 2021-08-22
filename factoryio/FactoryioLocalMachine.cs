@@ -2,7 +2,7 @@ using l99.driver.@base;
 
 namespace l99.driver.factoryio
 {
-    public class FactoryioMachine : Machine
+    public class FactoryioLocalMachine : Machine
     {
         public override string ToString()
         {
@@ -23,7 +23,7 @@ namespace l99.driver.factoryio
             }
         }
         
-        public FactoryioMachine(Machines machines, bool enabled, string id, object config) : base(machines, enabled, id, config)
+        public FactoryioLocalMachine(Machines machines, bool enabled, string id, object config) : base(machines, enabled, id, config)
         {
             dynamic cfg = (dynamic) config;
             
