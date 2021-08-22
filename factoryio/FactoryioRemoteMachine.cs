@@ -1,4 +1,5 @@
 using l99.driver.@base;
+using RestSharp;
 
 namespace l99.driver.factoryio
 {
@@ -34,6 +35,13 @@ namespace l99.driver.factoryio
         
         private FactoryioRemoteEndpoint _factoryioRemoteEndpoint;
 
+        public RestClient Client
+        {
+            get => _client;
+        }
+
+        private RestClient _client;
+        
         public FactoryioRemoteMachine(Machines machines, bool enabled, string id, object config) : base(machines, enabled, id, config)
         {
             dynamic cfg = (dynamic) config;
@@ -41,6 +49,9 @@ namespace l99.driver.factoryio
             this["cfg"] = cfg;
             
             _factoryioRemoteEndpoint = new FactoryioRemoteEndpoint(cfg.type["net_uri"], (short)cfg.type["net_timeout_s"]);
+
+            _client = new RestClient(cfg.type["net_uri"]);
+            _client.Timeout = cfg.type["net_timeout_s"] * 1000;
         }
     }
 }

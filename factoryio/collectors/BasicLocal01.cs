@@ -10,7 +10,7 @@ namespace l99.driver.factoryio.collectors
     public class BasicLocal01 : Collector
     {
         private string _subTopic = "factoryio/fio/io";
-        private List<string> _mapNames = new();
+        private Dictionary<(string, string), dynamic> _mapNames = new();
         private Dictionary<(string, string), dynamic> _mapValues = new();
         
         public BasicLocal01(Machine machine, object cfg) : base(machine, cfg)
@@ -46,6 +46,7 @@ namespace l99.driver.factoryio.collectors
                 {
                     var memory = new
                     {
+                        type = piv.GetType().Name,
                         name = piv.Name,
                         address = piv.Address,
                         direction = piv.MemoryType.ToString().ToUpper(),
@@ -63,8 +64,8 @@ namespace l99.driver.factoryio.collectors
         {
             processMemories(args, (memory) =>
             {
-                if(!_mapNames.Contains(memory.name))
-                    _mapNames.Add(memory.name);
+                if(!_mapNames.ContainsKey((memory.name,memory.direction)))
+                    _mapNames.Add((memory.name, memory.direction), null);
             });
         }
         
@@ -94,9 +95,9 @@ namespace l99.driver.factoryio.collectors
                 MemoryMap.Instance.OutputsNameChanged -= fioNameChange;
                 MemoryMap.Instance.MemoriesNameChanged -= fioNameChange;
 
-                foreach (var memory_name in _mapNames)
+                foreach (var kv in _mapNames)
                 {
-                    machine.ApplyVeneer(typeof(factoryio.veneers.Memory), memory_name);
+                    machine.ApplyVeneer(typeof(factoryio.veneers.Memory), $"{kv.Key.Item2}/{kv.Key.Item1}");
                 }
                 
                 await machine.Broker.SubscribeAsync(_subTopic, incomingMessage);
@@ -118,7 +119,15 @@ namespace l99.driver.factoryio.collectors
                 MemoryMap.Instance.Update();
 
                 foreach (var kv in _mapValues)
-                    await machine.PeelVeneerAsync(kv.Key.Item1, kv.Value);
+                {
+                    //TODO: handle items previously not veneered
+                    if (!_mapNames.ContainsKey(kv.Key))
+                        continue;
+                    
+                    await machine.PeelVeneerAsync($"{kv.Key.Item2}/{kv.Key.Item1}", kv.Value);
+
+                    _mapNames[kv.Key] = kv.Value;
+                }
 
                 _mapValues.Clear();
 
