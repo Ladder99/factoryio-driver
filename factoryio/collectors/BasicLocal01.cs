@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using EngineIO;
 using l99.driver.@base;
 using MQTTnet;
+using Newtonsoft.Json.Linq;
 
 namespace l99.driver.factoryio.collectors
 {
@@ -144,15 +145,53 @@ namespace l99.driver.factoryio.collectors
         private async Task incomingMessage(string topic, string payload, ushort qos, bool retain)
         {
             /*
-            TODO: 
-                parse
-                find by name in _mapNames
-                    kind
-                    type    
-                        <tag> = MemoryMap.Instance.Get<type>(name, <kind>)
-                        <tag>.Value = new_value
-                        Update
-            */
+                [
+                    { "name": "Conveyor", "value": true, "kind": "output" }
+                ]
+             */
+            
+            try
+            {
+                var tags = JArray.Parse(payload);
+
+                foreach (JObject tag in tags)
+                {
+                    updateTag(tag);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, $"[{machine.Id}] Incoming MQTT payload processing failed.");
+            }
+
+            void updateTag(JObject tag)
+            {
+                try
+                {
+                    MemoryType kind = MemoryType.Output;
+
+                    try { kind = Enum.Parse<MemoryType>(tag.GetValue("kind").ToString(), true); }
+                    catch { }
+
+                    var key = (tag.GetValue("name").ToString(),
+                        CultureInfo.CurrentCulture.TextInfo.ToTitleCase(kind.ToString().ToLower()));
+                    
+                    if (!_mapNames.ContainsKey(key))
+                        return;
+
+                    string get_method = $"Get{_mapNames[key].type}";
+                    
+                    // get method
+                        //MemoryMap.Instance.Get
+                    // invoke
+                    // update value
+                    // store Memory<>  until next update ?
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex, $"[{machine.Id}] Incoming MQTT tag processing failed.");
+                }
+            }
         }
     }
 }
